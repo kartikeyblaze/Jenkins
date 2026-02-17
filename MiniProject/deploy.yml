@@ -1,7 +1,7 @@
 ---
 - name: Deploy Calculator App
   hosts: target
-  remote_user: raju
+  remote_user: kartikey
   become: true
 
   tasks:
