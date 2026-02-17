@@ -2,7 +2,7 @@
 - name: Deploy Calculator App
   hosts: target
   remote_user: raju
-  become: false
+  become: true
 
   tasks:
     - name: Pull Docker Image from Hub
