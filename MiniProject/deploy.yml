@@ -1,23 +1,30 @@
 ---
-- name: Pull Docker Image from Docker Hub
+- name: Deploy Calculator App
   hosts: target
-  # hosts: localhost
   remote_user: raju
   become: true
+
   tasks:
-    - name: Pull Docker Image
-      docker_image:
-        name: "iiitb/calculator"
+    - name: Pull Docker Image from Hub
+      # Use your successful DockerHub username here
+      community.docker.docker_image:
+        name: "kartikeyblaze/calculator"
+        tag: latest
         source: pull
       register: docker_pull_result
 
-    - name: Display Docker Pull Result
-      debug:
-        var: docker_pull_result
-        
-    - name: Start Docker service
-      service:
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
         name: docker
         state: started
-    - name: Running container
-      shell: docker run -it -d --name calculator iiitb/calculator /bin/bash
+        enabled: yes
+
+    - name: Run Container (Automatic Update)
+      community.docker.docker_container:
+        name: calculator
+        image: "kartikeyblaze/calculator:latest"
+        state: started
+        restart_policy: always
+        # Remove /bin/bash unless your Dockerfile specifically requires it
+        detach: yes
+        recreate: yes  # This replaces the old container if the image changed
